@@ -1,0 +1,57 @@
+body {
+  font-family: Arial;
+  background: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  flex-direction: column;
+  align-items: center;
+}
+
+h2 {
+  margin-bottom: 15px;
+}
+
+#replica {
+  width: 160px;
+  height: 220px;
+  background: #b0b0b0;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+}
+
+.form-box {
+  background: #fff;
+  padding: 20px;
+  width: 360px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 12px;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+input[type=range] {
+  flex: 1;
+}
+
+input[type=number] {
+  width: 70px;
+  padding: 5px;
+}
+
+select {
+  width: 100%;
+  padding: 7px;
+  margin-bottom: 15px;
+}

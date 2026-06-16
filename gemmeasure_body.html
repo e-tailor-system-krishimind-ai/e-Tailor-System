@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TailorAI - Precision Scan</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script async src="https://docs.opencv.org/4.x/opencv.js"></script>
+
+    <style>
+        :root { --primary: #00ffcc; --bg: #0f172a; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: white; margin: 0; overflow-x: hidden; }
+        
+        /* Header */
+        .header { padding: 20px; text-align: center; background: rgba(0,0,0,0.3); border-bottom: 1px solid #333; }
+        .header h1 { margin: 0; color: var(--primary); font-size: 24px; letter-spacing: 1px; }
+
+        /* Camera Container */
+        .main-wrapper { display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .viewfinder { position: relative; border-radius: 20px; border: 4px solid #1e293b; overflow: hidden; background: #000; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        canvas { display: block; width: 100%; max-width: 640px; }
+
+        /* UI Overlays */
+        #status-tag { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.7); padding: 8px 16px; border-radius: 50px; font-size: 14px; border: 1px solid var(--primary); }
+        #progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 8px; background: rgba(255,255,255,0.1); }
+        #progress-bar { width: 0%; height: 100%; background: var(--primary); transition: width 0.15s ease; }
+        #countdown { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 120px; color: var(--primary); font-weight: 800; display: none; text-shadow: 0 0 30px rgba(0,0,0,0.5); }
+
+        /* Result Panel */
+        .result-panel { display: none; margin-top: 30px; background: white; color: #1e293b; border-radius: 20px; width: 100%; max-width: 400px; padding: 25px; box-shadow: 0 10px 40px rgba(0,255,204,0.2); animation: slideUp 0.5s ease; }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .result-panel h2 { margin: 0 0 20px 0; font-size: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
+        .measure-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+        .measure-row:last-child { border: none; }
+        .label { font-weight: 600; color: #64748b; }
+        .value { font-weight: 800; color: #0f172a; font-family: monospace; font-size: 18px; }
+
+        .btn-reset { width: 100%; background: #0f172a; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 600; margin-top: 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>TailorAI Scan</h1>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="viewfinder" id="viewfinder">
+            <video id="video" width="640" height="480" style="display:none" autoplay></video>
+            <canvas id="canvas" width="640" height="480"></canvas>
+            
+            <div id="status-tag">Aligning Body...</div>
+            <div id="countdown">3</div>
+            <div id="progress-container"><div id="progress-bar"></div></div>
+        </div>
+
+        <div class="result-panel" id="resultPanel">
+            <h2>Measurement Report</h2>
+            <div id="measurements-list"></div>
+            <button class="btn-reset" onclick="location.reload()">RETAKE SCAN</button>
+        </div>
+    </div>
+
+<script>
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const progressBar = document.getElementById("progress-bar");
+    const statusTag = document.getElementById("status-tag");
+
+    let scale = 0;
+    let stability = 0;
+    const TARGET_STABILITY = 60; // Approx 5-6 seconds
+    let isLocked = false;
+
+    // --- MediaPipe Setup ---
+    const pose = new Pose({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}` });
+    pose.setOptions({ modelComplexity: 1, smoothLandmarks: true });
+    pose.onResults(handleResults);
+
+    function handleResults(results) {
+        if (isLocked) return;
+        
+        // 1. Draw Feed
+        ctx.drawImage(results.image, 0, 0, 640, 480);
+        
+        if (results.poseLandmarks) {
+            // 2. Detection Logic
+            const paperFound = runPaperDetection(results.poseLandmarks);
+            drawKeypoints(results.poseLandmarks);
+
+            // 3. Stability Logic
+            if (paperFound) {
+                stability++;
+                statusTag.innerText = "HOLD STILL...";
+                statusTag.style.borderColor = "#00ffcc";
+            } else {
+                stability = Math.max(0, stability - 1);
+                statusTag.innerText = "FIND A4 PAPER";
+                statusTag.style.borderColor = "red";
+            }
+
+            // Update Progress
+            const prog = (stability / TARGET_STABILITY) * 100;
+            progressBar.style.width = prog + "%";
+
+            if (stability >= TARGET_STABILITY) {
+                triggerCapture(results.poseLandmarks);
+            }
+        }
+    }
+
+    function runPaperDetection(lm) {
+        let src = cv.imread(canvas);
+        let gray = new cv.Mat(), thresh = new cv.Mat();
+        cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+        cv.threshold(gray, thresh, 180, 255, cv.THRESH_BINARY);
+        
+        let contours = new cv.MatVector(), hierarchy = new cv.Mat();
+        cv.findContours(thresh, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+        const wrist = { x: lm[16].x * 640, y: lm[16].y * 480 }; // Right Wrist
+        let found = false;
+
+        for (let i = 0; i < contours.size(); ++i) {
+            let cnt = contours.get(i);
+            let area = cv.contourArea(cnt);
+            if (area > 1500 && area < 20000) {
+                let rect = cv.boundingRect(cnt);
+                let ratio = rect.width / rect.height;
+                let d = Math.hypot(rect.x - wrist.x, rect.y - wrist.y);
+
+                if (ratio > 0.65 && ratio < 0.85 && d < 150) {
+                    scale = 21 / rect.width;
+                    ctx.strokeStyle = "#00ffcc";
+                    ctx.lineWidth = 4;
+                    ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
+                    found = true;
+                    break;
+                }
+            }
+        }
+        src.delete(); gray.delete(); thresh.delete(); contours.delete(); hierarchy.delete();
+        return found;
+    }
+
+    function triggerCapture(lm) {
+        isLocked = true;
+        let count = 3;
+        const cd = document.getElementById("countdown");
+        cd.style.display = "block";
+
+        const timer = setInterval(() => {
+            count--;
+            cd.innerText = count;
+            if (count === 0) {
+                clearInterval(timer);
+                cd.style.display = "none";
+                showFinalResults(lm);
+            }
+        }, 1000);
+    }
+
+    function showFinalResults(lm) {
+        const getPt = (i) => ({ x: lm[i].x * 640, y: lm[i].y * 480 });
+        const calcDist = (a, b) => Math.hypot(getPt(a).x - getPt(b).x, getPt(a).y - getPt(b).y) * scale;
+
+        const data = {
+            "Total Height": (Math.abs(getPt(0).y - (getPt(27).y + getPt(28).y)/2) * scale + 15).toFixed(1) + " cm",
+            "Shoulder": calcDist(11, 12).toFixed(1) + " cm",
+            "Chest (Est)": (calcDist(11, 12) * 2.1).toFixed(1) + " cm",
+            "Arm Length": calcDist(12, 16).toFixed(1) + " cm",
+            "Inseam (Leg)": calcDist(24, 28).toFixed(1) + " cm",
+            "Waist (Flat)": calcDist(23, 24).toFixed(1) + " cm"
+        };
+
+        let html = "";
+        for (let key in data) {
+            html += `<div class="measure-row"><span class="label">${key}</span><span class="value">${data[key]}</span></div>`;
+        }
+        
+        document.getElementById("measurements-list").innerHTML = html;
+        document.getElementById("viewfinder").style.border = "4px solid #00ffcc";
+        document.getElementById("resultPanel").style.display = "block";
+        statusTag.innerText = "SCAN COMPLETE";
+    }
+
+    function drawKeypoints(lm) {
+        ctx.fillStyle = "#ff3366";
+        [11, 12, 23, 24, 16, 28].forEach(i => {
+            ctx.beginPath();
+            ctx.arc(lm[i].x * 640, lm[i].y * 480, 5, 0, 2 * Math.PI);
+            ctx.fill();
+        });
+    }
+
+    const camera = new Camera(video, {
+        onFrame: async () => { if (!isLocked) await pose.send({ image: video }); },
+        width: 640, height: 480
+    });
+    camera.start();
+</script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Digital Body Measurement</title>
+
+<!-- MediaPipe -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+<!-- OpenCV -->
+<script async src="https://docs.opencv.org/4.x/opencv.js"></script>
+
+<style>
+body{
+  background:#111;
+  color:white;
+  text-align:center;
+  font-family:Arial;
+}
+
+canvas,video{
+  border-radius:12px;
+  margin:10px;
+}
+
+#box{
+  background:white;
+  color:black;
+  padding:15px;
+  border-radius:12px;
+  width:240px;
+  position:fixed;
+  right:20px;
+  top:80px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>📐 Stand Straight & Hold A4 Paper</h2>
+
+<video id="video" width="640" height="480" autoplay></video>
+<canvas id="canvas" width="640" height="480"></canvas>
+<canvas id="cvCanvas" width="640" height="480" style="display:none"></canvas>
+
+<div id="box">Waiting...</div>
+
+<script>
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const cvCanvas = document.getElementById("cvCanvas");
+const cvCtx = cvCanvas.getContext("2d");
+
+/* =========================
+ GLOBALS
+========================= */
+
+let scale = 0;
+let locked = false;
+
+let stableCount = 0;
+let lastRect = null;
+
+let autoCaptured = false;
+
+
+/* =========================
+ CAMERA
+========================= */
+
+navigator.mediaDevices.getUserMedia({video:true})
+.then(s=>{
+  video.srcObject=s;
+});
+
+
+/* =========================
+ MEDIAPIPE
+========================= */
+
+const pose = new Pose({
+ locateFile:file =>
+ `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+});
+
+pose.setOptions({
+ modelComplexity:1,
+ smoothLandmarks:true
+});
+
+
+/* =========================
+ MAIN LOOP
+========================= */
+
+pose.onResults(res=>{
+
+ ctx.clearRect(0,0,640,480);
+ ctx.drawImage(res.image,0,0,640,480);
+
+ detectA4();
+
+ if(res.poseLandmarks){
+
+   drawPoints(res.poseLandmarks);
+
+   if(locked){
+     calculate(res.poseLandmarks);
+   }
+
+ }
+
+});
+
+
+const camera = new Camera(video,{
+ onFrame:async()=>{
+   await pose.send({image:video});
+ },
+ width:640,
+ height:480
+});
+
+camera.start();
+
+
+/* =========================
+ DRAW
+========================= */
+
+function drawPoints(lm){
+
+ lm.forEach(p=>{
+   ctx.beginPath();
+   ctx.arc(p.x*640,p.y*480,4,0,2*Math.PI);
+   ctx.fillStyle="red";
+   ctx.fill();
+ });
+
+}
+
+
+/* =========================
+ UTILS
+========================= */
+
+function toPx(p){
+ return {x:p.x*640,y:p.y*480};
+}
+
+function dist(a,b){
+ return Math.hypot(a.x-b.x,a.y-b.y);
+}
+
+
+/* =========================
+ MEASURE
+========================= */
+
+function calculate(lm){
+
+ let LS=toPx(lm[11]);
+ let RS=toPx(lm[12]);
+
+ let LH=toPx(lm[23]);
+ let RH=toPx(lm[24]);
+
+ let H=toPx(lm[0]);
+ let A=toPx(lm[27]);
+
+ let chest = dist(LS,RS)*scale;
+ let waist = dist(LH,RH)*scale;
+ let height= dist(H,A)*scale;
+
+ document.getElementById("box").innerHTML=`
+ <b>Height:</b> ${height.toFixed(1)} cm<br>
+ <b>Chest:</b> ${chest.toFixed(1)} cm<br>
+ <b>Waist:</b> ${waist.toFixed(1)} cm<br><br>
+
+ ✅ Scale Locked
+ `;
+
+ autoCapture(height,chest,waist);
+}
+
+
+/* =========================
+ A4 DETECTION (STABLE)
+========================= */
+
+function detectA4(){
+
+ if(locked) return;
+
+ cvCtx.drawImage(video,0,0,640,480);
+
+ let src=cv.imread(cvCanvas);
+ let gray=new cv.Mat();
+
+ cv.cvtColor(src,gray,cv.COLOR_RGBA2GRAY);
+ cv.GaussianBlur(gray,gray,new cv.Size(5,5),0);
+
+ let edges=new cv.Mat();
+ cv.Canny(gray,edges,60,160);
+
+ let cont=new cv.MatVector();
+ let hier=new cv.Mat();
+
+ cv.findContours(edges,cont,hier,
+  cv.RETR_EXTERNAL,
+  cv.CHAIN_APPROX_SIMPLE);
+
+ let best=null;
+ let max=0;
+
+ for(let i=0;i<cont.size();i++){
+
+   let c=cont.get(i);
+   let area=cv.contourArea(c);
+
+   if(area>4000){
+
+     let r=cv.boundingRect(c);
+     let ratio=r.width/r.height;
+
+     if(ratio>0.68 && ratio<0.74){
+
+       if(area>max){
+         max=area;
+         best=r;
+       }
+
+     }
+   }
+ }
+
+ if(best){
+
+   drawRect(best);
+
+   if(checkStable(best)){
+     stableCount++;
+   }else{
+     stableCount=0;
+   }
+
+   if(stableCount>25){
+
+     scale = 21/best.width;
+     locked=true;
+
+     console.log("LOCKED:",scale);
+
+   }
+
+   lastRect=best;
+ }
+
+ src.delete();gray.delete();
+ edges.delete();cont.delete();
+ hier.delete();
+}
+
+
+function drawRect(r){
+
+ ctx.strokeStyle="lime";
+ ctx.lineWidth=3;
+
+ ctx.strokeRect(r.x,r.y,r.width,r.height);
+
+}
+
+
+function checkStable(r){
+
+ if(!lastRect) return false;
+
+ let dx=Math.abs(r.x-lastRect.x);
+ let dy=Math.abs(r.y-lastRect.y);
+
+ return (dx<10 && dy<10);
+}
+
+
+/* =========================
+ AUTO CAPTURE
+========================= */
+
+function autoCapture(h,c,w){
+
+ if(autoCaptured) return;
+
+ if(h>140 && h<200){
+
+   autoCaptured=true;
+
+   console.log("AUTO SAVED");
+
+   alert("✅ Measurement Saved!");
+
+ }
+
+}
+
+</script>
+
+</body>
+</html>

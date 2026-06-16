@@ -1,0 +1,108 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #ffb88c, #de6262);
+
+    display: flex;
+    justify-content: center;   
+    align-items: center;       
+}
+
+
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+
+.card {
+    width: 500px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 18px;
+}
+
+
+.card h2 {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.sub {
+    text-align: center;
+    color: #777;
+    margin-bottom: 25px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+}
+
+td label {
+    font-weight: 500;
+    color: #444;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+input:focus, textarea:focus {
+    border-color: #ff6a3d;
+}
+
+textarea {
+    resize: none;
+    height: 70px;
+}
+
+.btn-row {
+    text-align: center;
+    padding-top: 15px;
+}
+
+button {
+    background: #ff6a3d;
+    color: #fff;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #e85b2f;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-link a {
+    color: #ff6a3d;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-link span {
+    color: #ff6a3d;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: underline;
+}

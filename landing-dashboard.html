@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tailor landing-dashboard</title>
+    <link rel="stylesheet" href="landing-dashboard.css">
+</head>
+<body>
+
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <!-- LEFT : LOGO + SITE NAME -->
+
+    <a href="landing-dashboard.html" class="brand">
+        <img src="assets/logo2.png" alt="e-Tailor Logo" class="logo">
+        <span class="site-name">e-Tailor System</span>
+    </a>
+  
+    <div class="coins">
+      🪙 <span id="coinCount">0</span>
+    </div>
+
+
+
+
+    <!-- CENTER : NAV LINKS -->
+
+    <ul class="nav-links">
+        <li><a href="Clnt_dashboad.html">Dashboard</a></li>
+        <li><a href="view-order.html">My Orders</a></li>
+        <li><a href="measurements.html">Measurements</a></li>
+        <li><a href="profile.html">Profile</a></li>
+    </ul>
+
+    <!-- RIGHT : LOGOUT -->
+
+    <a href="newlanding_pg.html" class="logout-btn">Logout</a>
+
+</nav>
+
+
+
+<!-- HERO SECTION -->
+
+<section class="hero">
+    <div class="hero-text">
+        <h2>Welcome, <span id="userName"></span> 👋</h2>
+        <p>
+          Welcome to <strong>e-Tailor System</strong> 🙏  
+          Yahan aap apne stitching orders manage kar sakte ho, measurements save kar sakte ho,  
+          aur VR Try-On ke through apna perfect fit pehle hi dekh sakte ho.
+        </p>
+
+
+        <div class="hero-buttons">
+            <a href="Clnt_dashboad.html">
+            <button class="primary">View Dashboard</button>
+            </a>
+            <a href="measurements.html">
+            <button class="secondary">Add Measurement</button>
+            </a>
+        </div>
+    </div>
+
+    <div class="hero-image">
+        <img src="assets/Clnt_dsh5.jpg"
+             alt="Tailor Dashboard">
+    </div>
+</section>
+
+<!-- STATS -->
+
+<section class="stats">
+
+  <div class="stat-card">
+    <h3>Total Orders</h3>
+    <p id="totalOrders">0</p>                 
+  </div>
+
+  <div class="stat-card">
+    <h3>Pending</h3>
+    <p id="pendingOrders">0</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>Completed</h3>
+    <p id="completedOrders">0</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>Total Cost</h3>
+    <p>₹ <span id="totalCost">0</span></p>
+  </div>
+
+</section>
+
+
+<section class="benefits">
+
+  <h2>Your Benefits</h2>
+
+  <div class="benefit-grid">
+
+    <div class="benefit-card">
+      🎁 Loyalty Rewards
+      <p>Earn coins on every order</p>
+    </div>
+
+    <div class="benefit-card">
+      🚚 Free Delivery
+      <p>On orders above ₹2000</p>
+    </div>
+
+    <div class="benefit-card">
+      💎 VIP Access
+      <p>Early access to designs</p>
+    </div>
+
+    <div class="benefit-card">
+      🤖 VR Preview
+      <p>Try before stitching</p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="catalogue">
+
+  <h2 class="cat-title">Our Premium Designs</h2>
+  <p class="cat-subtitle">Choose your perfect style ✨</p>
+
+  <div class="cat-grid">
+
+    <!-- Card 1 -->
+    <div class="cat-card">
+      <img src="assets/formal.avif" alt="">
+      <div class="cat-content">
+        <h3>Men's Formal Shirt</h3>
+        <p>Perfect office wear</p>
+        <span>₹1200</span>
+        <button>View</button>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="cat-card">
+      <img src="assets/womens kurti.jpg" alt="">
+      <div class="cat-content">
+        <h3>Women's Kurti</h3>
+        <p>Stylish ethnic wear</p>
+        <span>₹1500</span>
+        <button>View</button>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="cat-card">
+      <img src="assets/suit.jpg" alt="">
+      <div class="cat-content">
+        <h3>Men's Suit</h3>
+        <p>Premium tailoring</p>
+        <span>₹5000</span>
+        <button>View</button>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="cat-card">
+      <img src="assets/design2.jpg" alt="">
+      <div class="cat-content">
+        <h3>Designer Blouse</h3>
+        <p>Wedding special</p>
+        <span>₹1800</span>
+        <button>View</button>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+<script src="landing-dashboard.js"></script>
+
+
+
+
+
+</body>
+</html>

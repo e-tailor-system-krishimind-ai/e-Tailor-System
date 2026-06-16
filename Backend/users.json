@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1769801919123,
+    "name": "om thombare",
+    "email": "omranjit@123gmail.com",
+    "password": "12345678",
+    "address": "amravati"
+  },
+  {
+    "id": 1769802168730,
+    "name": "Saurabh Goraksha",
+    "email": "saurabhgoraksha717@gmail.com",
+    "password": "12345678",
+    "address": "Dasak,Jail Road,Nashik,Maharashtra"
+  },
+  {
+    "id": 1769802255054,
+    "name": "ram raj",
+    "email": "ramraj@gmail.com",
+    "password": "ramraj12345",
+    "address": "nandurnaka"
+  },
+  {
+    "id": 1769803260892,
+    "name": "shreya",
+    "email": "shreya@gmail.com",
+    "password": "shreya@123",
+    "address": "aurangabadnaka"
+  },
+  {
+    "id": "93494259-35c3-47d9-8650-599010eede95",
+    "name": "vaishnavi gaikwad",
+    "email": "vaishnavigaikwad@gmail.com",
+    "password": "vaishnavi@1234",
+    "address": "odha",
+    "role": "customer"
+  },
+  {
+    "id": "595aa135-8da3-4304-bb86-6fad6331fa00",
+    "name": "sakshi pawar",
+    "email": "pawarsakshi250@gmail.com",
+    "password": "mootumoshai",
+    "address": "jalna",
+    "role": "customer"
+  },
+  {
+    "id": "49bd9726-0a85-41ae-8adb-b58f546ab6e8",
+    "name": "poonam",
+    "email": "p@gmail.com",
+    "password": "123",
+    "address": "nashik",
+    "role": "customer"
+  },
+  {
+    "id": "60bcf5a0-4a4e-421d-b2a0-e00395690470",
+    "name": "shruti",
+    "email": "sardesai@gmail.com",
+    "password": "123456",
+    "address": "nashik",
+    "role": "customer"
+  },
+  {
+    "id": "739e0d24-2a7a-4703-a950-2bb9c80fdd6f",
+    "name": "Kishori Goraksha",
+    "email": "kishorigoraksha@gmail.com",
+    "password": "mootumoshai",
+    "address": "",
+    "role": "customer"
+  },
+  {
+    "id": "3530dc5e-171f-42d8-86e8-b1bf17be960a",
+    "name": "mayuresh choure",
+    "email": "mayuresh@gmail.com",
+    "password": "mayuresh123",
+    "address": "",
+    "role": "customer"
+  },
+  {
+    "id": "8e8a7352-ef2f-4b3c-9fb6-dfc677a01c47",
+    "name": "sita ",
+    "email": "sita@gmail.com",
+    "password": "12345",
+    "address": "nashik",
+    "role": "customer"
+  },
+  {
+    "id": "9c74a1c4-5dda-4eb3-ba31-bbdafcf03166",
+    "name": "Saurabh Goraksha",
+    "email": "saurabhgoraksha@gmail.com",
+    "password": "12345",
+    "address": "Dasak,Jail Road,Nashik,Maharashtra",
+    "role": "customer"
+  },
+  {
+    "id": "258be2f5-a57f-4d82-b530-721e3dcdbd59",
+    "name": "aakash kamankar ",
+    "email": "aakashkamankar2005@gmail.com",
+    "password": "12345678",
+    "address": "Nashik ",
+    "role": "customer"
+  }
+]

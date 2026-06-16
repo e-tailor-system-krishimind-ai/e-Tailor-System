@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin | Settings</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="admin-dashboard.css">
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <img src="assets/logo.png">
+    <span>e-Tailor Admin</span>
+  </div>
+
+  <div class="admin-user">
+    <button>Logout</button>
+  </div>
+</header>
+
+
+<div class="layout">
+
+<aside class="sidebar">
+<ul>
+
+<li><a href="admin-dashboard.html">📊 Dashboard</a></li>
+<li><a href="admin-clients.html">👥 Clients</a></li>
+<li><a href="admin-orders.html">📦 Orders</a></li>
+<li><a href="admin-measurements.html">📐 Measurements</a></li>
+<li><a href="admin-fabrics.html">🧵 Fabrics</a></li>
+<li><a href="admin-costing.html">💰 Costing</a></li>
+<li><a href="admin-reports.html">📈 Reports</a></li>
+
+<li class="active">
+  <a href="admin-settings.html">⚙️ Settings</a>
+</li>
+
+</ul>
+</aside>
+
+
+<main class="content">
+
+<h2 class="page-title">Settings</h2>
+
+<div class="card p-4 rounded-4">
+
+<form>
+
+<div class="mb-3">
+<label>Shop Name</label>
+<input type="text" class="form-control" value="Mayur Tailor">
+</div>
+
+<div class="mb-3">
+<label>Contact</label>
+<input type="text" class="form-control" value="9403441909">
+</div>
+
+<button class="btn btn-warning rounded-pill">
+Save Settings
+</button>
+
+</form>
+
+</div>
+
+</main>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

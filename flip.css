@@ -1,0 +1,110 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Poppins, sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #ffb88c, #de6262);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* VIDEO BACKGROUND */
+.bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+  filter: brightness(0.55); /* dark effect for readability */
+}
+
+/* BODY */
+body {
+  font-family: Poppins, sans-serif;
+  min-height: 100vh;
+  background: transparent;
+}
+/* 3D SCENE */
+.scene {
+    width: 380px;
+    height: 420px;
+    perspective: 1000px;
+}
+
+/* CARD */
+.card {
+    width: 100%;
+    height: 115%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s ease;
+}
+
+.card.flip {
+    transform: rotateY(180deg);
+}
+
+/* CARD FACES */
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0); /* lighter glass */
+    backdrop-filter: blur(18px);
+    box-shadow: 0 30px 60px rgba(251, 251, 251, 0.342);
+    border-radius: 18px;
+    padding: 30px;
+    
+    backface-visibility: hidden;
+}
+
+.back {
+    transform: rotateY(180deg);
+}
+
+/* FORM */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;    
+    background: #ff6a3d;
+    border: none;
+    border-radius: 25px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+p {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+span {
+    color: #ff6a3d;
+    cursor: pointer;
+    font-weight: 500;
+}

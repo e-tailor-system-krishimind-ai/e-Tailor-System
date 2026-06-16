@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>E-Tailor Measurement Replica</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h2>E-Tailor Measurement System</h2>
+
+<div id="replica"></div>
+
+<div class="form-box">
+
+  <label>Select Dress Type</label>
+  <select id="dressSelect" onchange="selectDress()">
+    <option value="">-- Select --</option>
+    <option value="shirt">Shirt</option>
+    <option value="pant">Pant</option>
+    <option value="suit">Suit</option>
+    <option value="blouse">Blouse</option>
+    <option value="kurti">Kurti</option>
+  </select>
+
+  <div id="fieldsContainer"></div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
