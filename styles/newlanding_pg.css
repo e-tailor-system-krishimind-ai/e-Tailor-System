@@ -14,7 +14,7 @@ html {
 /* BODY */
 body {
     font-family: Poppins, sans-serif;
-    background-image: url("assets/background3.jpg"); /* 👈 image path */
+    background-image: url("../assets/background3.jpg"); /* 👈 image path */
     background-size: cover;          /* full screen */
     background-position: center;     /* center align */
     background-repeat: no-repeat;    /* repeat na ho */
@@ -1246,7 +1246,6 @@ footer {
 body {
     font-family: sans-serif;
 }
-
 
 
 

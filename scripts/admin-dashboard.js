@@ -6,6 +6,11 @@ document.querySelectorAll(".sidebar li").forEach(item => {
   });
 });
 
+function logout() {
+  localStorage.removeItem("admin");
+  window.location.href = "newlanding_pg.html";
+}
+
 const links = document.querySelectorAll(".sidebar a");
 const currentPage = window.location.pathname.split("/").pop();
 
@@ -14,4 +19,3 @@ links.forEach(link => {
     link.parentElement.classList.add("active");
   }
 });
-
