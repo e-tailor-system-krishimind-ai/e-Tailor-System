@@ -1,19 +1,31 @@
-# e-Tailor System
+# E-Tailor System
 
-## Project layout
+## Project structure
 
-- HTML pages stay at the project root so existing page links and query-string routes remain unchanged.
-- `styles/` contains the page and shared stylesheets.
-- `scripts/` contains frontend behavior, including the shared customer and admin dashboard scripts.
-- `assets/` contains images, video, and 3D models used by the pages.
-- `Backend/server.js` configures the API; `Backend/routes/` contains endpoint groups and `Backend/utils/` contains shared JSON storage helpers.
+- `Backend/` contains the Express API, route handlers, and JSON storage.
+- `frontend/index.html` is the frontend entry point. It opens the existing public landing page.
+- `frontend/features/` groups canonical HTML pages, styles, and scripts by feature.
+- `frontend/shared/` holds scripts and styles used by multiple client workflows.
+- `frontend/assets/` groups images, videos, and 3D models with their metadata.
+- `docs/refactor-report.md` records the page map, compatibility routes, architecture, and checks.
 
-## Run the API
+## Run locally
 
-From the `Backend` directory, install its dependencies if needed and run:
+From `Backend/`, install dependencies if needed and start the API and static frontend server:
 
 ```sh
 npm start
 ```
 
-The API listens on `http://localhost:5000`.
+Open `http://localhost:5000/`. The same Express server serves the frontend and API. Existing frontend API calls continue to use `http://localhost:5000/api`.
+
+## API routes
+
+The existing API paths and methods are unchanged:
+
+- `POST /api/register`
+- `POST /api/login`
+- `POST /api/measurements/:userId`
+- `GET /api/dashboard/:userId`
+
+Data continues to use the JSON files in `Backend/`.
